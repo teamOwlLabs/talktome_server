@@ -12,10 +12,10 @@ from doorbell.models import Category
 
 @csrf_exempt
 class VisitView(APIView):
-    
+
     def post(self, request, format=None):
         try:
-            if not request.data['visit_reason'] or not request.data['type']:
+            if not request.data.get('visit_reason') or not request.data.get('type'):
                 raise ValidationError
 
             category = Category.objects.get(pk=request.data['type'])
@@ -28,8 +28,10 @@ class VisitView(APIView):
             
             # TODO: 얼굴인식이 필요할 경우 데이터 형식이 변경되어야 함
 
-            if serializer.is_valid():
-                serializer.save()
+            if not serializer.is_valid():
+                raise ValidationError
+
+            serializer.save()
 
             return Response(status=status.HTTP_200_OK)
         
@@ -54,3 +56,26 @@ class CategoryListCreateView(APIView):
         serializer = CategorySerializer(category, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, format=None):
+        try:
+            if not request.data.get('type'):
+                raise ValidationError('No required data.')
+
+            if not isinstance(request.data['type'], str):
+                raise ValidationError('Unsupported data type.')
+
+            serializer = CategorySerializer(data=request.data)
+
+            if not serializer.is_valid():
+                raise ValidationError
+
+            serializer.save()
+
+            return Response(status=status.HTTP_200_OK)
+
+        except ValidationError as e:
+            return Response(
+                {'detail': e.args[0]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
