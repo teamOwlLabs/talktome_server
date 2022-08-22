@@ -171,4 +171,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Secret Key List
+talktome-4032c-firebase-adminsdk-bccd0-9d4860081e.json
+
 # End of https://www.toptal.com/developers/gitignore/api/django

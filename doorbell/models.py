@@ -17,3 +17,8 @@ class Visit(models.Model):
   friend = models.ForeignKey(Friend, on_delete=models.SET_NULL, related_name="friend_vist", null=True, blank=True)
   visit_reason = models.TextField(_("Visti Reason"))
   created_at = models.DateTimeField(_("Created At"), auto_now=True)
+
+
+# ClientToken을 어드민 페이지에서 손 쉽게 변혀하기 위해서 만든 테이블 나중에는 방식이 변경되어야 합니다.
+class ClientToken(models.Model):
+  fcm_token = models.TextField(_("FCM Token"), null=True, blank=True)

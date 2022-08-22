@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+import firebase_admin
+from firebase_admin import credentials
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -118,3 +120,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Firebase Setup
+cred_path = os.path.join(BASE_DIR, "talktome-4032c-firebase-adminsdk-bccd0-9d4860081e.json")
+cred = credentials.Certificate(cred_path)
+firebase_admin.initialize_app(cred)
