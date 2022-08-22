@@ -6,7 +6,7 @@
 > doorbell/visit
 #### method
 POST
-#### requset data
+#### request data
 1. type(required) : 선택 타입
 2. visit_reason(required) : 음성 데이터를 텍스트로 변환해서 넣어 보내주세요.
 #### validation

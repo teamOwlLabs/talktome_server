@@ -6,19 +6,19 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
 
-from doorbell.serializers import VisitSerializer
+from doorbell.serializers import VisitSerializer, CategorySerializer
 from doorbell.models import Category
 
 
 @csrf_exempt
 class VisitView(APIView):
+    
     def post(self, request, format=None):
-
         try:
             if not request.data['visit_reason'] or not request.data['type']:
                 raise ValidationError
 
-            category = Category.objects.get(type=request.data['type'])
+            category = Category.objects.get(pk=request.data['type'])
             
                 
             serializer = VisitSerializer(data={
@@ -44,3 +44,13 @@ class VisitView(APIView):
                 {'detail': 'Type is not exist'},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+
+@csrf_exempt
+class CategoryListCreateView(APIView):
+
+    def get(self, reqeust, format=None):
+        category = Category.objects.all()
+        serializer = CategorySerializer(category, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
