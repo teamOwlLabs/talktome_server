@@ -12,7 +12,7 @@ from doorbell.serializers import (
     CategorySerializer,
     ClientTokenSerializer,
 )
-from doorbell.models import Category, ClientToken
+from doorbell.models import Category, ClientToken, Visit
 
 def send_to_firebase_cloud_messaging(title_msg, body_msg):
     # Client SDK Token
@@ -137,3 +137,35 @@ class FCMTokenCreateView(APIView):
                 {'detail': e.args[0]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+@csrf_exempt
+class LatestVisitHistoryView(APIView):
+
+    def get(self, request, format=None):
+        try:
+            unread_visit = Visit.objects.filter(read_count=0)
+
+            # 데이터가 이예 없을 경우 early return
+            if not unread_visit.exists():
+                return Response({}, status=status.HTTP_200_OK)
+
+            # 혹시나 그 전에 생성된 방문 기록이지만 안읽고 새로운 방문 기록이 들어온 상황이라면 전에 들어온 것은 같이 읽음 처리
+            unread_visit.update(read_count=1)
+
+            latest_visit = unread_visit.last()
+            category = latest_visit.category
+
+            return Response(
+                {
+                    'id': latest_visit.id,
+                    'category': category.type,
+                    'visit_reason': latest_visit.visit_reason,
+                    'rgb_color': category.rgb_color,
+                    'vibration_pattern': vibration_pattern,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except:
+            pass
