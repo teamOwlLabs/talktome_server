@@ -10,12 +10,15 @@ class Friend(models.Model):
 
 class Category(models.Model):
   type = models.CharField(_("Type"), max_length=32)
+  rgb_color = models.CharField(_("RGB Color"), max_length=8, null=True)
+  vibration_pattern = models.CharField(_("Vibration Pattern"), max_length=10, null=True)
 
 
 class Visit(models.Model):
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name="category_visits", null=True)
   friend = models.ForeignKey(Friend, on_delete=models.SET_NULL, related_name="friend_vist", null=True, blank=True)
   visit_reason = models.TextField(_("Visti Reason"))
+  num_of_confirmation = models.PositiveIntegerField(_("Number Of Confirmation"), default=0)
   created_at = models.DateTimeField(_("Created At"), auto_now=True)
 
 
