@@ -1,3 +1,5 @@
+import requests
+
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
@@ -144,17 +146,19 @@ class LatestVisitHistoryView(APIView):
 
     def get(self, request, format=None):
         try:
-            unread_visit = Visit.objects.filter(read_count=0)
+            unread_visit = Visit.objects.filter(num_of_confirmation=0)
+
+            print(unread_visit)
 
             # 데이터가 이예 없을 경우 early return
             if not unread_visit.exists():
-                return Response({}, status=status.HTTP_200_OK)
+                return Response(status=status.HTTP_200_OK)
 
             # 혹시나 그 전에 생성된 방문 기록이지만 안읽고 새로운 방문 기록이 들어온 상황이라면 전에 들어온 것은 같이 읽음 처리
-            unread_visit.update(read_count=1)
-
             latest_visit = unread_visit.last()
             category = latest_visit.category
+
+            unread_visit.update(num_of_confirmation=1)
 
             return Response(
                 {
@@ -167,5 +171,14 @@ class LatestVisitHistoryView(APIView):
                 status=status.HTTP_200_OK,
             )
 
-        except:
+        except Exception as _:
             pass
+
+
+@csrf_exempt
+class HostNameView(APIView):
+
+    def get(self, request, format=None):
+        your_external_ip = requests.get('https://api.ipify.org').content.decode('utf8')
+
+        return Response({'address': your_external_ip}, status=status.HTTP_200_OK)
