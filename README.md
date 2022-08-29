@@ -38,3 +38,13 @@
 #### remark
 한번에 하나만 등록할 수 있게해서 새로운 token을 등록하면 기존 token은 전부 삭제 처리
 
+
+### Url : doorbell/visit/latest/
+
+### GET: 가장 최근의 미확인 방문요청 보기
+
+
+### Url : doorbell/address/
+
+### GET: 내 IP Address 가져가기 
+
