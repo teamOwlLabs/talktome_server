@@ -17,7 +17,7 @@ class Category(models.Model):
 class Visit(models.Model):
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name="category_visits", null=True)
   friend = models.ForeignKey(Friend, on_delete=models.SET_NULL, related_name="friend_vist", null=True, blank=True)
-  visit_reason = models.TextField(_("Visti Reason"))
+  visit_reason = models.TextField(_("Visti Reason"), blank=True)
   num_of_confirmation = models.PositiveIntegerField(_("Number Of Confirmation"), default=0)
   created_at = models.DateTimeField(_("Created At"), auto_now=True)
 
