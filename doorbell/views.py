@@ -194,6 +194,10 @@ class LatestVisitHistoryView(APIView):
 class HostNameView(APIView):
 
     def get(self, request, format=None):
-        your_external_ip = requests.get('https://api.ipify.org').content.decode('utf8')
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        result = s.getsockname()[0]
+        s.close()
 
-        return Response({'address': your_external_ip}, status=status.HTTP_200_OK)
+        return Response({'address': result}, status=status.HTTP_200_OK)
