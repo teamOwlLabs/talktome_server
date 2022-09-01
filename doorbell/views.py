@@ -1,3 +1,4 @@
+import json
 import requests
 
 from django.shortcuts import render
@@ -22,9 +23,23 @@ def send_to_firebase_cloud_messaging(title_msg, body_msg):
 
     # TODO: Set Default Message
     message = messaging.Message(
-        notification=messaging.Notification(
-            title=title_msg,
-            body=body_msg,
+
+        # 1번 방법
+        # notification=messaging.Notification(
+        #     title=title_msg,
+        #     body=body_msg,
+        # ),
+
+        # 2번 방법
+        android=messaging.AndroidConfig(
+            priority='high',
+            notification=messaging.AndroidNotification(
+                title=title_msg,
+                body=body_msg,
+                priority='high',
+                visibility='public',
+                channel_id='My Channel One1',
+            )
         ),
         token=registration_token,
     )
@@ -57,10 +72,10 @@ class VisitView(APIView):
 
             serializer.save()
 
-            #send_to_firebase_cloud_messaging(
-            #   title_msg="방문자 알림",
-            #   body_msg=f"{visit_reason}을 위해 누군가가 방문했습니다",
-            # )
+            send_to_firebase_cloud_messaging(
+              title_msg=category.type,
+              body_msg=f"{request.data['visit_reason']}을 위해 누군가가 방문했습니다",
+            )
 
             return Response(status=status.HTTP_200_OK)
         
@@ -121,7 +136,7 @@ class FCMTokenCreateView(APIView):
             serializer = ClientTokenSerializer(data=request.data)
 
             if not serializer.is_valid():
-                raise ValidationError
+                raise ValidationError('Post Data Error')
 
             # 테스트 기기는 하나만 사용할 것이기 때문에 혹시 새로운 token을 추가한다면
             # 기존에 있는 토큰은 전부 삭제
