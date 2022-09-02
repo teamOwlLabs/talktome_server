@@ -71,11 +71,15 @@ class VisitView(APIView):
                 raise ValidationError
 
             serializer.save()
-
-            send_to_firebase_cloud_messaging(
+            try:
+                send_to_firebase_cloud_messaging(
               title_msg=category.type,
-              body_msg=f"{request.data['visit_reason']}을 위해 누군가가 방문했습니다",
-            )
+              body_msg=f"{request.data['visit_reason']}을 위해 누군가가 방문했습니다",)
+            except AttributeError: 
+                pass
+
+            
+            
 
             return Response(status=status.HTTP_200_OK)
         
