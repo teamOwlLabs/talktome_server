@@ -19,7 +19,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Category
-    fields = ['id', 'type']
+    fields = ['id', 'type',"vibration_pattern"]
     read_only_fields = ['id']
 
 
