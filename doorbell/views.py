@@ -85,7 +85,6 @@ class VisitView(APIView):
                 "channel_id":str(category.id)+"_category_notification",
                 "type_id":str(category.id),
                 "visit_reason":request.data['visit_reason'],
-                "pictogram":"/media/"+category.pictogram.name,
                 "vibration_pattern":category.vibration_pattern
 
             }
