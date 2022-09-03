@@ -188,6 +188,7 @@ class LatestVisitHistoryView(APIView):
                     'visit_reason': latest_visit.visit_reason,
                     'rgb_color': category.rgb_color,
                     'vibration_pattern': category.vibration_pattern,
+                    'pictogram':"/media/"+category.pictogram.name
                 },
                 status=status.HTTP_200_OK,
             )
