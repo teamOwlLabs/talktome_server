@@ -1,4 +1,5 @@
 import json
+from pydoc import cli
 import requests
 
 from django.shortcuts import render
@@ -17,10 +18,10 @@ from doorbell.serializers import (
 )
 from doorbell.models import Category, ClientToken, Visit
 
-def send_to_firebase_cloud_messaging(title_msg, body_msg):
+def send_to_firebase_cloud_messaging(title_msg, body_msg,channel_id,data):
     # Client SDK Token
     registration_token = ClientToken.objects.first().fcm_token
-
+    print(registration_token)
     # TODO: Set Default Message
     message = messaging.Message(
 
@@ -34,12 +35,15 @@ def send_to_firebase_cloud_messaging(title_msg, body_msg):
         android=messaging.AndroidConfig(
             priority='high',
             notification=messaging.AndroidNotification(
+                click_action=".MainActivity",
                 title=title_msg,
                 body=body_msg,
                 priority='high',
                 visibility='public',
-                channel_id='My Channel One1',
-            )
+                channel_id=channel_id
+                
+            ),
+            data=data,
         ),
         token=registration_token,
     )
@@ -74,8 +78,21 @@ class VisitView(APIView):
             try:
                 send_to_firebase_cloud_messaging(
               title_msg=category.type,
-              body_msg=f"{request.data['visit_reason']}을 위해 누군가가 방문했습니다",)
+              body_msg=f"{request.data['visit_reason']}을 위해 누군가가 방문했습니다",
+              channel_id=str(category.id)+"_category_notification",
+              data={
+                "type":str(category.type),
+                "channel_id":str(category.id)+"_category_notification",
+                "type_id":str(category.id),
+                "visit_reason":request.data['visit_reason'],
+                "pictogram":"/media/"+category.pictogram.name,
+                "vibration_pattern":category.vibration_pattern
+
+            }
+            )
+              
             except AttributeError: 
+                print("AttributeError")
                 pass
 
             
@@ -136,6 +153,7 @@ class FCMTokenCreateView(APIView):
 
     def post(self, request, format=None):
         try:
+            print("fcmtokencreate")
             if not request.data.get('token'):
                 raise ValidationError('No required data.')
 
