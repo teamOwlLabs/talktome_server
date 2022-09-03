@@ -16,10 +16,10 @@ class VisitSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
+  pictogram = serializers.ImageField(use_url=False)
   class Meta:
     model = Category
-    fields = ['id', 'type',"vibration_pattern"]
+    fields = ['id', 'type',"vibration_pattern","pictogram"]
     read_only_fields = ['id']
 
 

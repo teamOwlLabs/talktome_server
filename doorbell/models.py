@@ -12,7 +12,7 @@ class Category(models.Model):
   type = models.CharField(_("Type"), max_length=32)
   rgb_color = models.CharField(_("RGB Color"), max_length=8, null=True)
   vibration_pattern = models.CharField(_("Vibration Pattern"), max_length=10, null=True)
-
+  pictogram = models.ImageField(_("Image"),upload_to = "pictogram/image",null=True)
 
 class Visit(models.Model):
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name="category_visits", null=True)

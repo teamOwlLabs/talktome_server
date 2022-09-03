@@ -101,9 +101,11 @@ class CategoryListCreateView(APIView):
 
     def get(self, reqeust, format=None):
         category = Category.objects.all()
+        print(category[0].pictogram)
         serializer = CategorySerializer(category, many=True)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, 
+            status=status.HTTP_200_OK )
 
     def post(self, request, format=None):
         try:
